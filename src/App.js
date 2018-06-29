@@ -6,34 +6,55 @@ class App extends Component {
 
   state = {
     persons: [
-      {name: 'Mike', age: 34},
-      {name: 'John', age: 33},
-      {name: 'Luke', age: 22}
-    ]
+      {id: 'sdasdqw', name: 'Mike', age: 34},
+      {id: 'xczxczx', name: 'John', age: 33},
+      {id: 'zdeffvb', name: 'Luke', age: 22}
+    ],
+    showPersons: false
   }
 
-  switchNameHandler = (newName) => {
-    // console.log('Was clicked!!');
-    this.setState({
-      persons: [
-        {name: newName, age: 34},
-        {name: 'John', age: 33},
-        {name: 'Luke', age: 18}
-      ]
+  nameChangeHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     })
+
+    const person = { 
+      // again do not mutate the state by takeing the reference - copy it
+      ...this.state.persons[personIndex]
+      // alternatively can use js method
+      // const person = Object.assign({}, this.state.persons[personIndex])
+    }
+
+    //working on a copy of person
+    person.name = event.target.value;
+
+    //again copy of whole array
+    const persons = [...this.state.persons];
+    //and change
+    persons[personIndex] = person;
+
+    this.setState({persons: persons});
   }
 
-  changeNameHandler = (event) => {
-    this.setState({
-      persons: [
-        {name: 'Mike', age: 34},
-        {name: event.target.value, age: 33},
-        {name: 'Luke', age: 22}
-      ]
-    })
+  deletePersonHandler = (personIndex) => {
+    //slice witout args simply create a copy of an element
+    // without that I'm still mutate oryginal state during splicing
+    // arrays and objects -> only the reference
+    // first aproach:
+    // const persons = this.state.persons.slice(); 
+    // as an alternative I can use spread operator
+    // to create new instance of the array
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
+    this.setState({persons: persons});
   }
 
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({showPersons: !doesShow});
+  }
 
+  // w person -> need arrow function to use index 
   // w button  ->  second way to pass argument to a function, but this way can be inefficient
   render() {
 
@@ -45,6 +66,24 @@ class App extends Component {
       cursor: 'pointer'
     }
 
+    let persons = null;
+
+    if (this.state.showPersons){
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name} 
+              age={person.age}
+              key={person.id}
+              changed={(event) => {this.nameChangeHandler(event, person.id)}}
+            />
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <h1>Hi, I'm a React App.</h1>
@@ -52,19 +91,9 @@ class App extends Component {
         
         <button 
           style={myStyle}
-          onClick = {() => this.switchNameHandler('Michael')}>Switch Name</button>
-        <Person 
-          name={this.state.persons[0].name} 
-          age={this.state.persons[0].age}/>
-        <Person 
-          name={this.state.persons[1].name} 
-          age={this.state.persons[1].age}
-          // first way to pass arguments, when we are passing a function as a prop
-          click={this.switchNameHandler.bind(this, 'Mike!!!')}
-          changed={this.changeNameHandler}>My Hobbies: Racing</Person>
-        <Person 
-          name={this.state.persons[2].name} 
-          age={this.state.persons[2].age}/>
+          onClick = {this.togglePersonsHandler}>Toggle persons</button>
+
+        {persons}
       </div>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'I\'m a React App!!!!'));
