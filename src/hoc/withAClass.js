@@ -2,7 +2,7 @@ import React from 'react';
 
 const withAClass = (WrappedComponent, className) => {
 	return (props) => (
-		<div>
+		<div className={className}>
 			<WrappedComponent />
 		</div>
 	);

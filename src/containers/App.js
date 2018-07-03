@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
-import WithClass from '../hoc/WithClass';
+import Aux from '../hoc/Aux';
+import withAClass from '../hoc/withAClass';
 
 class App extends Component {
 
@@ -71,14 +72,14 @@ class App extends Component {
 
     return (
       // <StyleRoot>
-        <WithClass classes={classes.App}>
+        <Aux>
           <Cockpit
             appTitle={this.props.title}
             showPersons={this.state.showPersons}
             persons={this.state.persons}
             clicked={this.togglePersonsHandler}/>
           {persons}
-        </WithClass>
+        </Aux>
       // </StyleRoot>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'I\'m a React App!!!!'));
@@ -86,4 +87,4 @@ class App extends Component {
 }
 
 // export default Radium(App);
-export default App;
+export default withAClass(App, classes.App);
