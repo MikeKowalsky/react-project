@@ -7,14 +7,19 @@ import Aux from '../hoc/Aux';
 import withAClass from '../hoc/withAClass';
 
 class App extends Component {
+  constructor(props){
+    super(props);
 
-  state = {
-    persons: [
-      {id: 'sdasdqw', name: 'Mike', age: 34},
-      {id: 'xczxczx', name: 'John', age: 33},
-      {id: 'zdeffvb', name: 'Luke', age: 22}
-    ],
-    showPersons: false
+    this.state = {
+      persons: [
+        {id: 'sdasdqw', name: 'Mike', age: 34},
+        {id: 'xczxczx', name: 'John', age: 33},
+        {id: 'zdeffvb', name: 'Luke', age: 22}
+      ],
+      showPersons: false,
+      toggleClicked: 0
+    }
+
   }
 
   nameChangeHandler = (event, id) => {
@@ -55,7 +60,12 @@ class App extends Component {
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
-    this.setState({showPersons: !doesShow});
+    this.setState( (prevState, props) => {
+      return {
+        showPersons: !doesShow,
+        toggleClicked: prevState.toggleClicked + 1
+      }
+    });
   }
 
   // w person -> need arrow function to use index 
